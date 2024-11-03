@@ -90,5 +90,19 @@ class CalculatorTest {
 
 
     //TODO hier weitere Tests erstellen
+
+    @Test
+    @DisplayName("should parse multiple operators")
+    void testMultipleOperators() {
+        Calculator calc = new Calculator();
+        calc.pressDigitKey(9);
+        calc.pressBinaryOperationKey("+");
+        calc.pressUnaryOperationKey("-");
+        calc.pressDigitKey(3);
+
+        String expected = "6";
+        String actual = calc.readScreen();
+        assertEquals(expected, actual);
+    }
 }
 
