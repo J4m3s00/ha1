@@ -14,6 +14,8 @@ public class Calculator {
 
     private String latestOperation = "";
 
+    private boolean resetScreen = false; // Is used to controll reset from the binary operator
+
     /**
      * @return den aktuellen Bildschirminhalt als String
      */
@@ -31,10 +33,9 @@ public class Calculator {
     public void pressDigitKey(int digit) {
         if(digit > 9 || digit < 0) throw new IllegalArgumentException();
 
-        var lastValueString = Double.toString(latestValue);
-        lastValueString = trimFloatingPoints(lastValueString);
+        if(screen.equals("0") || resetScreen) screen = "";
 
-        if(screen.equals("0") || lastValueString.equals(screen)) screen = "";
+        resetScreen = false;
 
         screen = screen + digit;
     }
@@ -51,6 +52,7 @@ public class Calculator {
         screen = "0";
         latestOperation = "";
         latestValue = 0.0;
+        resetScreen = false;
     }
 
     /**
@@ -65,6 +67,7 @@ public class Calculator {
     public void pressBinaryOperationKey(String operation)  {
         latestValue = Double.parseDouble(screen);
         latestOperation = operation;
+        resetScreen = true;
     }
 
     /**
@@ -75,15 +78,14 @@ public class Calculator {
      * @param operation "√" für Quadratwurzel, "%" für Prozent, "1/x" für Inversion
      */
     public void pressUnaryOperationKey(String operation) {
-        latestOperation = operation;
-        latestValue = switch(operation) {
+        var value = switch(operation) {
             case "√" -> Math.sqrt(Double.parseDouble(screen));
             case "%" -> Double.parseDouble(screen) / 100;
             case "1/x" -> 1 / Double.parseDouble(screen);
             case "-" -> -Double.parseDouble(screen);
             default -> throw new IllegalArgumentException();
         };
-        screen = Double.toString(latestValue);
+        screen = Double.toString(value);
         if(screen.equals("NaN")) screen = "Error";
         screen = trimFloatingPoints(screen);
     }
