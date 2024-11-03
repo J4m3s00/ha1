@@ -31,7 +31,10 @@ public class Calculator {
     public void pressDigitKey(int digit) {
         if(digit > 9 || digit < 0) throw new IllegalArgumentException();
 
-        if(screen.equals("0") || latestValue == Double.parseDouble(screen)) screen = "";
+        var lastValueString = Double.toString(latestValue);
+        lastValueString = trimFloatingPoints(lastValueString);
+
+        if(screen.equals("0") || lastValueString.equals(screen)) screen = "";
 
         screen = screen + digit;
     }
@@ -72,18 +75,17 @@ public class Calculator {
      * @param operation "√" für Quadratwurzel, "%" für Prozent, "1/x" für Inversion
      */
     public void pressUnaryOperationKey(String operation) {
-        latestValue = Double.parseDouble(screen);
         latestOperation = operation;
-        var result = switch(operation) {
+        latestValue = switch(operation) {
             case "√" -> Math.sqrt(Double.parseDouble(screen));
             case "%" -> Double.parseDouble(screen) / 100;
             case "1/x" -> 1 / Double.parseDouble(screen);
+            case "-" -> -Double.parseDouble(screen);
             default -> throw new IllegalArgumentException();
         };
-        screen = Double.toString(result);
+        screen = Double.toString(latestValue);
         if(screen.equals("NaN")) screen = "Error";
-        if(screen.contains(".") && screen.length() > 11) screen = screen.substring(0, 10);
-
+        screen = trimFloatingPoints(screen);
     }
 
     /**
@@ -127,7 +129,16 @@ public class Calculator {
         };
         screen = Double.toString(result);
         if(screen.equals("Infinity")) screen = "Error";
-        if(screen.endsWith(".0")) screen = screen.substring(0,screen.length()-2);
-        if(screen.contains(".") && screen.length() > 11) screen = screen.substring(0, 10);
+        screen = trimFloatingPoints(screen);
+    }
+
+
+    /**
+     * Trim floating point string.
+     */
+    private static String trimFloatingPoints(String input) {
+        if(input.endsWith(".0")) input = input.substring(0,input.length()-2);
+        if(input.contains(".") && input.length() > 11) input = input.substring(0, 10);
+        return input;
     }
 }
