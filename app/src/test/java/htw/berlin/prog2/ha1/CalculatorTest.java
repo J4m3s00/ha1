@@ -97,10 +97,12 @@ class CalculatorTest {
         Calculator calc = new Calculator();
         calc.pressDigitKey(9);
         calc.pressBinaryOperationKey("+");
-        calc.pressUnaryOperationKey("-");
+
+        calc.pressUnaryOperationKey("1/x");
         calc.pressDigitKey(3);
 
-        String expected = "6";
+
+        String expected = "3";
         String actual = calc.readScreen();
         assertEquals(expected, actual);
     }
