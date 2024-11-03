@@ -92,6 +92,22 @@ class CalculatorTest {
     //TODO hier weitere Tests erstellen
 
     @Test
+    @DisplayName("should parse percent")
+    void testPercent() {
+        Calculator calc = new Calculator();
+        calc.pressDigitKey(5);
+        calc.pressBinaryOperationKey("+");
+        calc.pressDigitKey(5);
+        calc.pressDigitKey(0);
+        calc.pressUnaryOperationKey("%");
+        calc.pressEqualsKey();
+
+        String expected = "5.5";
+        String actual = calc.readScreen();
+        assertEquals(expected, actual);
+    }
+
+    @Test
     @DisplayName("should parse multiple operators")
     void testMultipleOperators() {
         Calculator calc = new Calculator();
