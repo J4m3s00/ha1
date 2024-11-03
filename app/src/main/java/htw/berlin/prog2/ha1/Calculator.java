@@ -131,6 +131,12 @@ public class Calculator {
     }
 
 
+    /**
+     * Calculates the current value with the value in the screen.
+     * If there is no current value it will return the value of the screen,
+     *
+     * @return Result of the current calculation
+     */
     private double calculate() {
         if (latestValue.isEmpty()) {
             return Double.parseDouble(screen);
