@@ -122,5 +122,21 @@ class CalculatorTest {
         String actual = calc.readScreen();
         assertEquals(expected, actual);
     }
+
+    @Test
+    @DisplayName("should calculate multiple binary operators")
+    void testMultipleBinaryOperators() {
+        Calculator calc = new Calculator();
+        calc.pressDigitKey(9);
+        calc.pressBinaryOperationKey("+");
+        calc.pressDigitKey(3);
+        calc.pressBinaryOperationKey("-");
+        calc.pressDigitKey(2);
+        calc.pressEqualsKey();
+
+        String expected = "10";
+        String actual = calc.readScreen();
+        assertEquals(expected, actual);
+    }
 }
 

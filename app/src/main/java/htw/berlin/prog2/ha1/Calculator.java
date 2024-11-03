@@ -1,5 +1,7 @@
 package htw.berlin.prog2.ha1;
 
+import java.util.OptionalDouble;
+
 /**
  * Eine Klasse, die das Verhalten des Online Taschenrechners imitiert, welcher auf
  * https://www.online-calculator.com/ aufgerufen werden kann (ohne die Memory-Funktionen)
@@ -10,7 +12,7 @@ public class Calculator {
 
     private String screen = "0";
 
-    private double latestValue;
+    private OptionalDouble latestValue = OptionalDouble.empty();
 
     private String latestOperation = "";
 
@@ -51,7 +53,7 @@ public class Calculator {
     public void pressClearKey() {
         screen = "0";
         latestOperation = "";
-        latestValue = 0.0;
+        latestValue = OptionalDouble.empty();
         resetScreen = false;
     }
 
@@ -65,7 +67,7 @@ public class Calculator {
      * @param operation "+" für Addition, "-" für Substraktion, "x" für Multiplikation, "/" für Division
      */
     public void pressBinaryOperationKey(String operation)  {
-        latestValue = Double.parseDouble(screen);
+        latestValue = OptionalDouble.of(this.calculate());
         latestOperation = operation;
         resetScreen = true;
     }
@@ -122,6 +124,20 @@ public class Calculator {
      * und das Ergebnis direkt angezeigt.
      */
     public void pressEqualsKey() {
+        var result = calculate();
+        screen = Double.toString(result);
+        if(screen.equals("Infinity")) screen = "Error";
+        screen = trimFloatingPoints(screen);
+    }
+
+
+    private double calculate() {
+        if (latestValue.isEmpty()) {
+            return Double.parseDouble(screen);
+        }
+
+        var latestValue = this.latestValue.getAsDouble();
+
         var result = switch(latestOperation) {
             case "+" -> latestValue + Double.parseDouble(screen);
             case "-" -> latestValue - Double.parseDouble(screen);
@@ -129,9 +145,8 @@ public class Calculator {
             case "/" -> latestValue / Double.parseDouble(screen);
             default -> throw new IllegalArgumentException();
         };
-        screen = Double.toString(result);
-        if(screen.equals("Infinity")) screen = "Error";
-        screen = trimFloatingPoints(screen);
+
+        return result;
     }
 
 
